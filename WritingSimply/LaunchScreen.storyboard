@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="22685" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="LSV-vC-id1">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22685"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <scene sceneID="LSS-sc-id1">
+            <objects>
+                <viewController id="LSV-vC-id1" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="LSV-rv-id1">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="LaunchLogo" translatesAutoresizingMaskIntoConstraints="NO" id="LSV-iv-logo"/>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="LSV-sa-id1"/>
+                        <color key="backgroundColor" name="LaunchBackground"/>
+                        <constraints>
+                            <constraint firstItem="LSV-iv-logo" firstAttribute="top" secondItem="LSV-rv-id1" secondAttribute="top" id="e-top"/>
+                            <constraint firstItem="LSV-iv-logo" firstAttribute="bottom" secondItem="LSV-rv-id1" secondAttribute="bottom" id="e-bot"/>
+                            <constraint firstItem="LSV-iv-logo" firstAttribute="leading" secondItem="LSV-rv-id1" secondAttribute="leading" id="e-lead"/>
+                            <constraint firstItem="LSV-iv-logo" firstAttribute="trailing" secondItem="LSV-rv-id1" secondAttribute="trailing" id="e-trail"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="LSV-fr-id1" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="LaunchLogo" width="1320" height="2868"/>
+        <namedColor name="LaunchBackground">
+            <color red="0.3333333333333333" green="0.43137254901960786" blue="0.8196078431372549" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
+</document>
