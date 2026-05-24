@@ -15,6 +15,9 @@ struct WritingSimplyApp: App {
     var body: some Scene {
         WindowGroup {
             NotesListView()
+            #if DEBUG
+                .preferredColorScheme(.light)
+            #endif
         }
         .modelContainer(for: Note.self, inMemory: inMemoryStore)
     }

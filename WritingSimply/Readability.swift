@@ -7,6 +7,16 @@ struct Readability: Equatable {
     let grade: Double
 }
 
+enum GradeLabel {
+    static func display(for grade: Double) -> String {
+        let g = Int(grade.rounded())
+        if g <= 11 { return "Grade \(max(g, 1))" }
+        if g <= 16 { return "Undergrad" }
+        if g <= 18 { return "Grad" }
+        return "Post grad"
+    }
+}
+
 enum ReadabilityScorer {
     static func score(_ text: String) -> Readability {
         let words = splitWords(text)

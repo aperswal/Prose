@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import UIKit
 
 struct NoteEditorView: View {
     @Bindable var note: Note
@@ -7,13 +8,17 @@ struct NoteEditorView: View {
 
     enum Field: Hashable {
         case title
-        case body
     }
 
     @FocusState private var focus: Field?
     @State private var readability: Readability = ReadabilityScorer.score("")
     @State private var showReadabilityDetail = false
-    @State private var bodySelection: TextSelection? = nil
+
+    @State private var highlightsOn = false
+    @State private var enabledCategories: Set<HighlightCategory> = HighlightEngine.defaultEnabledCategories
+    @State private var highlights: [HighlightRange] = []
+    @State private var showHighlightSettings = false
+    @State private var isBodyEditing = false
 
     var body: some View {
         ScrollView {
@@ -23,50 +28,25 @@ struct NoteEditorView: View {
                     .textInputAutocapitalization(.sentences)
                     .submitLabel(.next)
                     .focused($focus, equals: .title)
-                    .onSubmit { jumpFromTitleToBody() }
+                    .onSubmit {
+                        focus = nil
+                        isBodyEditing = true
+                    }
 
-                TextField("Start writing", text: $note.body, selection: $bodySelection, axis: .vertical)
-                    .font(.title3)
-                    .textInputAutocapitalization(.sentences)
-                    .focused($focus, equals: .body)
-                    .frame(minHeight: 320, alignment: .topLeading)
+                bodyArea
             }
             .padding(.horizontal, 20)
             .padding(.top, 12)
         }
         .scrollDismissesKeyboard(.interactively)
         .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    showReadabilityDetail = true
-                } label: {
-                    HStack(spacing: 4) {
-                        Text("Grade")
-                        Text("\(Int(readability.grade.rounded()))")
-                            .contentTransition(.numericText(value: readability.grade))
-                    }
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                }
-                .accessibilityLabel("Readability grade \(Int(readability.grade.rounded()))")
-                .popover(isPresented: $showReadabilityDetail, arrowEdge: .top) {
-                    readabilityDetail(readability)
-                        .presentationCompactAdaptation(.popover)
-                }
-            }
-            ToolbarItem(placement: .topBarTrailing) {
-                if focus != nil {
-                    Button("Done") { focus = nil }
-                        .font(.body.weight(.semibold))
-                } else {
-                    Button { focus = .body } label: {
-                        Image(systemName: "pencil")
-                            .font(.title3)
-                    }
-                    .accessibilityLabel("Edit")
-                }
-            }
+        .toolbar { toolbarContent }
+        .sheet(isPresented: $showHighlightSettings) {
+            HighlightsSettingsSheet(
+                enabledCategories: $enabledCategories,
+                counts: HighlightEngine.counts(for: highlights)
+            )
+            .presentationDetents([.medium, .large])
         }
         .onChange(of: note.title) { _, _ in
             insertIfNeeded()
@@ -85,6 +65,12 @@ struct NoteEditorView: View {
                     readability = next
                 }
             }
+            if highlightsOn {
+                recomputeHighlights()
+            }
+        }
+        .onChange(of: enabledCategories) { _, _ in
+            if highlightsOn { recomputeHighlights() }
         }
         .onAppear {
             if note.isEmpty {
@@ -101,12 +87,95 @@ struct NoteEditorView: View {
         }
     }
 
-    private func jumpFromTitleToBody() {
-        if !note.body.isEmpty {
-            note.body = "\n" + note.body
+    @ViewBuilder
+    private var bodyArea: some View {
+        ZStack(alignment: .topLeading) {
+            if note.body.isEmpty {
+                Text("Start writing")
+                    .font(.title3)
+                    .foregroundStyle(.tertiary)
+                    .allowsHitTesting(false)
+            }
+            HighlightingTextEditor(
+                text: $note.body,
+                isEditing: $isBodyEditing,
+                highlights: highlights,
+                highlightsEnabled: highlightsOn
+            )
+            .frame(minHeight: 320, alignment: .topLeading)
         }
-        bodySelection = TextSelection(insertionPoint: note.body.startIndex)
-        focus = .body
+    }
+
+    @ToolbarContentBuilder
+    private var toolbarContent: some ToolbarContent {
+        ToolbarItem(placement: .topBarTrailing) {
+            Button {
+                showReadabilityDetail = true
+            } label: {
+                Text(GradeLabel.display(for: readability.grade))
+                    .contentTransition(.numericText(value: readability.grade))
+                    .font(.subheadline)
+                    .foregroundStyle(.tint)
+            }
+            .accessibilityLabel("Readability: \(GradeLabel.display(for: readability.grade))")
+            .popover(isPresented: $showReadabilityDetail, arrowEdge: .top) {
+                readabilityDetail(readability)
+                    .presentationCompactAdaptation(.popover)
+            }
+        }
+
+        ToolbarItem(placement: .topBarTrailing) {
+            Button(action: toggleHighlights) {
+                Image(systemName: highlightsOn ? "eye" : "eye.slash")
+                    .font(.title3)
+                    .foregroundStyle(highlightsOn ? Color.accentColor : Color.secondary)
+                    .contentTransition(.symbolEffect(.replace))
+            }
+            .accessibilityLabel(highlightsOn ? "Hide highlights" : "Show highlights")
+            .simultaneousGesture(
+                LongPressGesture(minimumDuration: 0.45)
+                    .onEnded { _ in
+                        let impact = UIImpactFeedbackGenerator(style: .medium)
+                        impact.impactOccurred()
+                        showHighlightSettings = true
+                    }
+            )
+        }
+
+        ToolbarItem(placement: .topBarTrailing) {
+            if focus != nil || isBodyEditing {
+                Button("Done") {
+                    focus = nil
+                    dismissKeyboard()
+                }
+                .font(.body.weight(.semibold))
+            }
+        }
+    }
+
+    private func dismissKeyboard() {
+        UIApplication.shared.sendAction(
+            #selector(UIResponder.resignFirstResponder),
+            to: nil, from: nil, for: nil
+        )
+    }
+
+    private func toggleHighlights() {
+        let impact = UIImpactFeedbackGenerator(style: .light)
+        impact.impactOccurred()
+        if !highlightsOn {
+            recomputeHighlights()
+        }
+        withAnimation(.easeInOut(duration: 0.18)) {
+            highlightsOn.toggle()
+        }
+        if !highlightsOn {
+            highlights = []
+        }
+    }
+
+    private func recomputeHighlights() {
+        highlights = HighlightEngine.analyze(note.body, enabled: enabledCategories)
     }
 
     private func insertIfNeeded() {
@@ -123,9 +192,26 @@ struct NoteEditorView: View {
             detailRow("Grade level", String(format: "%.1f", r.grade))
             detailRow("Words", "\(r.words)")
             detailRow("Reading time", readingTime(words: r.words))
+            if highlightsOn && !highlights.isEmpty {
+                Divider()
+                ForEach(HighlightCategory.allCases) { category in
+                    if let count = HighlightEngine.counts(for: highlights)[category], count > 0 {
+                        HStack(spacing: 8) {
+                            Circle().fill(category.color).frame(width: 8, height: 8)
+                            Text(category.displayName)
+                                .foregroundStyle(.secondary)
+                            Spacer()
+                            Text("\(count)")
+                                .fontWeight(.medium)
+                                .monospacedDigit()
+                        }
+                        .font(.subheadline)
+                    }
+                }
+            }
         }
         .padding(18)
-        .frame(minWidth: 240)
+        .frame(minWidth: 260)
     }
 
     private func readingTime(words: Int) -> String {

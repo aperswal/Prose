@@ -26,7 +26,11 @@ struct NotesListView: View {
                     NoteEditorView(note: note)
                 }
         }
-        .tint(Color(red: 0.36, green: 0.45, blue: 0.85))
+        .tint(Color(uiColor: UIColor { trait in
+            trait.userInterfaceStyle == .dark
+                ? UIColor(red: 0.55, green: 0.65, blue: 1.00, alpha: 1.0)
+                : UIColor(red: 0.36, green: 0.45, blue: 0.85, alpha: 1.0)
+        }))
     }
 
     private var sidebar: some View {
