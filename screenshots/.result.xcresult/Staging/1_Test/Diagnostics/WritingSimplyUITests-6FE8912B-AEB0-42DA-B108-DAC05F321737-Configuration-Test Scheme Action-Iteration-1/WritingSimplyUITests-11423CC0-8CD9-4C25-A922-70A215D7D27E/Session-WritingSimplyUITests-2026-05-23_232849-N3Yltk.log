@@ -1,0 +1,77 @@
+Xcode version: 26.5 (17F42)
+23:28:49.755 xcodebuild[13536:2631468] Beginning test session WritingSimplyUITests-B243B5E8-695B-4BA2-9A92-D6DA113C9D65 at 2026-05-23 23:28:49.750 on target <DVTiPhoneSimulator: 0xa6ddbb480> {
+		SimDevice: Clone 1 of iPhone 16 Pro (B1000844-8C15-4A40-992D-936094672F67, iOS 18.2, Shutdown)
+} (18.2 (22C150))
+23:28:49.755 xcodebuild[13536:2631468] 	/Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild
+test
+-project
+/Users/adityaperswal/Desktop/WritingSimply/screenshots/../WritingSimply.xcodeproj
+-scheme
+WritingSimply
+-destination
+id=CA9270E9-23B1-4A5B-BF07-5381A66B755D
+-derivedDataPath
+/Users/adityaperswal/Desktop/WritingSimply/screenshots/.build
+-only-testing:WritingSimplyUITests/ScreenshotCaptureUITests/test_captureHighlights
+-resultBundlePath
+/Users/adityaperswal/Desktop/WritingSimply/screenshots/.result.xcresult
+-quiet
+23:28:49.758 xcodebuild[13536:2631468] Test standard output and standard error is at /Users/adityaperswal/Desktop/WritingSimply/screenshots/.result.xcresult/Staging/1_Test/Diagnostics/WritingSimplyUITests-6FE8912B-AEB0-42DA-B108-DAC05F321737-Configuration-Test Scheme Action-Iteration-1/WritingSimplyUITests-11423CC0-8CD9-4C25-A922-70A215D7D27E/StandardOutputAndStandardError.txt
+23:28:50.335 xcodebuild[13536:2631468] B1000844-8C15-4A40-992D-936094672F67: Received sim device notification: {
+    notification = "availableDevices_changed";
+}
+23:28:50.335 xcodebuild[13536:2631468] B1000844-8C15-4A40-992D-936094672F67: Received sim device notification: {
+    device = "Clone 1 of iPhone 16 Pro (B1000844-8C15-4A40-992D-936094672F67, iOS 18.2, Booting)";
+    "last_booted_at" = "2026-05-24 06:28:50 +0000";
+    "new_state" = 2;
+    notification = "device_state";
+    "prev_state" = 1;
+}
+23:28:50.335 xcodebuild[13536:2631468] /Users/adityaperswal/Library/Developer/XCTestDevices: Received sim device set notification: {
+    device = "Clone 1 of iPhone 16 Pro (B1000844-8C15-4A40-992D-936094672F67, iOS 18.2, Booting)";
+    "last_booted_at" = "2026-05-24 06:28:50 +0000";
+    "new_state" = 2;
+    notification = "device_state";
+    "prev_state" = 1;
+}
+23:28:51.302 xcodebuild[13536:2631468] B1000844-8C15-4A40-992D-936094672F67: Received sim device notification: {
+    notification = "availableDevices_changed";
+}
+23:28:51.302 xcodebuild[13536:2631468] B1000844-8C15-4A40-992D-936094672F67: Received sim device notification: {
+    device = "Clone 1 of iPhone 16 Pro (B1000844-8C15-4A40-992D-936094672F67, iOS 18.2, Booted)";
+    "new_state" = 3;
+    notification = "device_state";
+    "prev_state" = 2;
+}
+23:28:51.302 xcodebuild[13536:2631468] /Users/adityaperswal/Library/Developer/XCTestDevices: Received sim device set notification: {
+    device = "Clone 1 of iPhone 16 Pro (B1000844-8C15-4A40-992D-936094672F67, iOS 18.2, Booted)";
+    "new_state" = 3;
+    notification = "device_state";
+    "prev_state" = 2;
+}
+23:28:51.303 xcodebuild[13536:2631472] 📱<DVTiPhoneSimulator (0xa6ddbb480), Clone 1 of iPhone 16 Pro, unknown class, 18.2 (22C150), B1000844-8C15-4A40-992D-936094672F67> claim LaunchSessionClaim_0xa6cb9a700 on simulator was issued, 2 claims exist.
+23:28:51.303 xcodebuild[13536:2631468] Setting up test runner session
+23:28:51.304 xcodebuild[13536:2631468] Registering/updating daemon-based crash report observer for process names (
+    xctest,
+    debugserver,
+    FrontBoard,
+    assertiond,
+    runningboardd,
+    SpringBoard,
+    testmanagerd,
+    backboardd,
+    DTServiceHub,
+    "WritingSimplyUITests-Runner",
+    Prose,
+    WritingSimplyUITests
+)
+23:28:51.305 xcodebuild[13536:2631599] Sim Clone 1 of iPhone 16 Pro: Unregistering for sim device notification with token 5
+23:28:51.305 xcodebuild[13536:2631599] Calling -[SimDevice getenv:error:] for TESTMANAGERD_SIM_SOCK
+23:28:51.506 xcodebuild[13536:2631599] Sim Clone 1 of iPhone 16 Pro has testmanagerd socket at /private/tmp/com.apple.launchd.oqGYdqA4aW/com.apple.testmanagerd.unix-domain.socket
+23:28:51.509 xcodebuild[13536:2631599] Validating test connection socket path (/private/tmp/com.apple.launchd.oqGYdqA4aW/com.apple.testmanagerd.unix-domain.socket)
+23:28:51.515 xcodebuild[13536:2631599] Constructing transport for test connection socket
+23:28:51.515 xcodebuild[13536:2631599] Connected socket 35 to testmanagerd for Sim Clone 1 of iPhone 16 Pro
+23:28:51.537 xcodebuild[13536:2631599] Received connection for test runner session
+23:28:51.537 xcodebuild[13536:2631599] Listening for proxy connection request from the test bundle
+23:28:51.538 xcodebuild[13536:2631599] Initiating session with identifier: B243B5E8-695B-4BA2-9A92-D6DA113C9D65
+23:28:51.573 xcodebuild[13536:2631468] Test runner session acquired connection.
